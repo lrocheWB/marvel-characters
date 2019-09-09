@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  ui:
+    container_name: marvel-ui
+    networks:
+      - trombinoscope
+    links:
+      - api
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    volumes:
+      - './ui:/app'
+      - '/app/node_modules'
+    ports:
+      - '3001:3000'
+    environment:
+      - NODE_ENV=development
+  api:
+    container_name: marvel-api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    networks:
+      - trombinoscope
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - MARVEL_PUBLIC_KEY=5fdf9763ff7319d6fc9ffddf3d6c89bb
+      - MARVEL_PRIVATE_KEY=a6ce18387330ec40df5b74ed67e490f2416c0ab4
+    volumes:
+      - './api:/app'
+      - '/app/node_modules'
+networks:
+  trombinoscope:
+    driver: bridge
